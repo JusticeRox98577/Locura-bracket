@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Locura Bracket</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="top">
+    <h1>Locura Bracket</h1>
+    <div class="right">
+      <span id="status" class="muted"></span>
+      <button id="btnLogin" class="btn">Sign in with Google</button>
+      <button id="btnLogout" class="btn btn-secondary hidden">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="notice" class="card hidden"></section>
+
+    <section id="me" class="card hidden">
+      <div class="row">
+        <div>
+          <div class="label">Signed in as</div>
+          <div id="meEmail" class="value"></div>
+        </div>
+        <div class="right">
+          <div class="label">Cutoff</div>
+          <div id="cutoffText" class="value"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="btnSave" class="btn hidden">Save</button>
+        <button id="btnLock" class="btn btn-danger hidden">Lock submission (no changes)</button>
+        <span id="lockState" class="pill hidden"></span>
+      </div>
+    </section>
+
+    <section id="bracket" class="card hidden">
+      <h2>Your bracket</h2>
+      <p class="muted">
+        Pick a winner for each matchup. Your next rounds auto-fill from your winners.
+      </p>
+      <div id="bracketRoot"></div>
+    </section>
+
+    <section id="admin" class="card hidden">
+      <h2>Admin</h2>
+      <p class="muted">Only your email can see this.</p>
+
+      <div class="row">
+        <label class="stack">
+          <span class="label">Cutoff date/time</span>
+          <input id="adminCutoff" type="datetime-local" />
+        </label>
+        <div class="right">
+          <button id="btnSetCutoff" class="btn">Set cutoff</button>
+          <button id="btnClearCutoff" class="btn btn-secondary">Clear cutoff</button>
+        </div>
+      </div>
+      <p class="muted small">
+        Tip: Clearing cutoff keeps submissions open.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer muted small">
+    Locura Bracket • Powered by Supabase + Vercel
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
