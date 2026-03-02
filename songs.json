@@ -1,0 +1,28 @@
+{
+  "songs": [
+    { "id": "angel", "title": "Ángel", "artist": "Grupo Frontera & Romeo Santos" },
+    { "id": "tqma", "title": "TQMA", "artist": "Eladio Carrión" },
+    { "id": "akakaw", "title": "Akakaw", "artist": "Renata Flores" },
+
+    { "id": "tocando_el_cielo", "title": "Tocando el Cielo", "artist": "Luis Fonsi" },
+    { "id": "regalo", "title": "Regalo", "artist": "Alvaro Soler" },
+
+    { "id": "si_sabes_contar", "title": "Si Sabes Contar", "artist": "Los Ángeles Azules, Luck Ra, Yami Safdie" },
+    { "id": "amuleto", "title": "Amuleto", "artist": "Diego Torres" },
+
+    { "id": "narcisista", "title": "Narcisista", "artist": "The Warning" },
+    { "id": "coleccionando_heridas", "title": "Coleccionando Heridas", "artist": "Karol G & Antonis Solís" },
+
+    { "id": "para_que", "title": "¿Para Qué?", "artist": "Ela Taubert" },
+    { "id": "la_mujer_que_soy", "title": "La Mujer que Soy", "artist": "Fanny Lu" },
+
+    { "id": "buen_cafe", "title": "Buen Café", "artist": "Efecto Pasillo" },
+    { "id": "goodbye", "title": "Goodbye", "artist": "Arthur Hanlon, Carlos Vives, Goyo" },
+
+    { "id": "seis_de_febrero", "title": "6 de Febrero", "artist": "Aitana" },
+    { "id": "luna_llena", "title": "Luna Llena", "artist": "Ebenezer Guerra & Elvis Crespo" },
+
+    { "id": "vuela", "title": "Vuela", "artist": "Luck Ra & Ke Personaje" },
+    { "id": "bzrp66", "title": "Music Sessions #66", "artist": "Daddy Yankee & BZRP" }
+  ]
+}
