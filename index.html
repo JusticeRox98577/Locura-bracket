@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Locura Bracket</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="title">Locura Bracket</div>
+      <div class="subtitle">Powered by Supabase + Vercel</div>
+    </div>
+
+    <div class="auth">
+      <button id="btnSignIn" class="btn">Sign in with Google</button>
+      <button id="btnSignOut" class="btn btn-ghost hidden">Sign out</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="status" class="status">Loading…</div>
+
+    <section id="profile" class="card hidden">
+      <div class="row">
+        <div>
+          <div class="label">Signed in as</div>
+          <div id="userEmail" class="value"></div>
+        </div>
+        <div class="spacer"></div>
+        <div id="lockBadge" class="badge hidden">Locked</div>
+      </div>
+
+      <div id="cutoffNote" class="note"></div>
+    </section>
+
+    <section id="adminPanel" class="card hidden">
+      <div class="row">
+        <h2>Admin</h2>
+        <div class="spacer"></div>
+        <div class="badge badge-admin">Admin Only</div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <label class="label" for="cutoffInput">Submission cutoff (your timezone)</label>
+          <input id="cutoffInput" type="datetime-local" class="input" />
+          <div class="help">Leave blank to keep submissions open.</div>
+        </div>
+
+        <div>
+          <label class="label">Actions</label>
+          <button id="btnSaveCutoff" class="btn">Save cutoff</button>
+          <div id="adminMsg" class="help"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="bracketCard" class="card hidden">
+      <div class="row">
+        <h2>Your Bracket</h2>
+        <div class="spacer"></div>
+        <button id="btnSubmit" class="btn btn-primary">Submit & Lock</button>
+      </div>
+
+      <div class="help">
+        Pick winners. Winners automatically advance to the next round. Once you submit, your bracket becomes view-only.
+      </div>
+
+      <div id="bracket" class="bracket"></div>
+
+      <div id="submitMsg" class="note"></div>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
