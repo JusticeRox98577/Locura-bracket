@@ -448,19 +448,23 @@ async function saveDraft() {
 async function submitAndLock() {
   if (!editingAllowed()) return;
 
-  // final save first
-  await saveDraft();
+  try {
+    await saveDraft();
 
-  const { data, error } = await supabase
-    .from(TBL_SUBMISSIONS)
-    .update({ locked: true })
-    .eq("user_id", user.id)
-    .select("*")
-    .single();
+    const { data, error } = await supabase
+      .from(TBL_SUBMISSIONS)
+      .update({ locked: true })
+      .eq("user_id", user.id)
+      .select("*")
+      .single();
 
-  if (error) throw error;
-  submission = data;
-  render();
+    if (error) throw error;
+
+    submission = data;
+    render();
+  } catch (e) {
+    showError(e?.message || String(e));
+  }
 }
 
 // ====== ADMIN PANEL ======
