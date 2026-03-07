@@ -291,22 +291,40 @@ async function loadOrCreateSubmission() {
     return;
   }
 
-  // Create draft submission
+  // Create draft submission if missing.
+  // Use ignoreDuplicates so this remains safe if a row already exists.
   const created = await supabase
     .from(TBL_SUBMISSIONS)
-    .insert({
+    .upsert({
       user_id: uid,
       nombre: "",
       clase: "",
       class_id: null, // ✅ ADDED
       picks: {},
       locked: false
-    })
+    }, { onConflict: "user_id", ignoreDuplicates: true })
     .select("*")
-    .single();
+    .maybeSingle();
 
   if (created.error) throw created.error;
-  submission = created.data;
+  if (created.data) {
+    submission = created.data;
+    return;
+  }
+
+  // If duplicate was ignored, fetch the existing row.
+  const retry = await supabase
+    .from(TBL_SUBMISSIONS)
+    .select("*")
+    .eq("user_id", uid)
+    .maybeSingle();
+
+  if (retry.error) throw retry.error;
+  if (!retry.data) {
+    throw new Error("Could not load your submission row. Check submissions RLS select policy for auth.uid().");
+  }
+
+  submission = retry.data;
 }
 
 function cutoffIsSet() {
