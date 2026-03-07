@@ -135,6 +135,7 @@ let picks = {};           // { matchId: 'A' | 'B' } winner slot
 let classes = [];         // ✅ ADDED
 
 let saving = false;
+let submitting = false;
 let lastError = "";
 
 // ====== DOM ======
@@ -432,8 +433,7 @@ async function saveDraft() {
     .update({
       nombre,
       clase,
-      picks: cleanPicks,
-      updated_at: new Date().toISOString()
+      picks: cleanPicks
     })
     .eq("user_id", user.id)
     .select("*")
@@ -447,8 +447,12 @@ async function saveDraft() {
 
 async function submitAndLock() {
   if (!editingAllowed()) return;
+  if (submitting) return;
 
   try {
+    submitting = true;
+    clearTimeout(saveTimer);
+    saveTimer = null;
     await saveDraft();
 
     const { data, error } = await supabase
@@ -464,6 +468,8 @@ async function submitAndLock() {
     render();
   } catch (e) {
     showError(e?.message || String(e));
+  } finally {
+    submitting = false;
   }
 }
 
@@ -741,8 +747,8 @@ function renderBracket() {
   wrap.appendChild(el("hr", { class:"sep" }));
 
   const footer = el("div", { class:"footerBar" }, [
-    el("button", { class:"btn", onclick: () => saveDraft().catch(e => showError(e.message || String(e))) , disabled: !editingAllowed() }, ["Save progress"]),
-    el("button", { class:"btn primary", onclick: () => submitAndLock().catch(e => showError(e.message || String(e))), disabled: !editingAllowed() }, ["Submit & Lock"]),
+    el("button", { class:"btn", onclick: () => saveDraft().catch(e => showError(e.message || String(e))) , disabled: !editingAllowed() || submitting }, ["Save progress"]),
+    el("button", { class:"btn primary", onclick: () => submitAndLock().catch(e => showError(e.message || String(e))), disabled: !editingAllowed() || submitting }, [submitting ? "Submitting..." : "Submit & Lock"]),
   ]);
 
   wrap.appendChild(footer);
