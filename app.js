@@ -133,6 +133,8 @@ let configRow = null;     // { id:'app', cutoff: ... }
 let submission = null;    // user’s row in submissions (or null)
 let picks = {};           // { matchId: 'A' | 'B' } winner slot
 let classes = [];         // ✅ ADDED
+let adminLockedSubmissions = [];
+let adminLoadingLocked = false;
 
 let saving = false;
 let submitting = false;
@@ -195,6 +197,12 @@ async function boot() {
 
   // enforce cascade validity (clears downstream if needed)
   normalizeCascade();
+
+  if (user && isAdmin()) {
+    await loadAdminLockedSubmissions();
+  } else {
+    adminLockedSubmissions = [];
+  }
 
   render();
 }
@@ -548,6 +556,38 @@ async function adminSetCutoff(valueOrNull) {
   render();
 }
 
+async function loadAdminLockedSubmissions() {
+  if (!isAdmin()) return;
+  adminLoadingLocked = true;
+  render();
+
+  const { data, error } = await supabase
+    .from(TBL_SUBMISSIONS)
+    .select("user_id,nombre,clase,locked")
+    .eq("locked", true)
+    .limit(300);
+
+  adminLoadingLocked = false;
+  if (error) throw error;
+  adminLockedSubmissions = data || [];
+}
+
+async function adminUnlockSubmission(userId) {
+  if (!isAdmin()) return;
+  if (!userId) return;
+
+  const { error } = await supabase
+    .from(TBL_SUBMISSIONS)
+    .update({ locked: false })
+    .eq("user_id", userId)
+    .eq("locked", true);
+
+  if (error) throw error;
+  await loadAdminLockedSubmissions();
+  render();
+  alert("Bracket unlocked.");
+}
+
 // ====== RENDER ======
 function renderSkeleton() {
   const root = $("#app");
@@ -752,6 +792,54 @@ function renderAdminPanel() {
     el("div", {}, [btnSet]),
     el("div", {}, [btnOpen]),
   ]));
+
+  const lockedWrap = el("div", { style: "margin-top:18px" }, [
+    el("h3", {}, ["Unlock Brackets"]),
+    el("p", { class: "hint" }, ["Admin only. Unlock a locked bracket so the student can edit again."]),
+    el("button", {
+      class: "btn",
+      onclick: async () => {
+        try {
+          await loadAdminLockedSubmissions();
+          render();
+        } catch (e) {
+          showError(e?.message || String(e));
+        }
+      }
+    }, ["Refresh list"])
+  ]);
+
+  if (adminLoadingLocked) {
+    lockedWrap.appendChild(el("p", { class: "smallMuted" }, ["Loading locked submissions..."]));
+  } else if (!adminLockedSubmissions.length) {
+    lockedWrap.appendChild(el("p", { class: "smallMuted" }, ["No locked submissions found."]));
+  } else {
+    for (const row of adminLockedSubmissions) {
+      const title = `${row.nombre || "(No nombre)"} • ${row.clase || "(No clase)"}`;
+      const uid = row.user_id || "";
+      lockedWrap.appendChild(el("div", { class: "match" }, [
+        el("div", { class: "matchTop" }, [
+          el("div", {}, [
+            el("div", { class: "song" }, [title]),
+            el("div", { class: "artist mono" }, [uid]),
+          ]),
+          el("button", {
+            class: "btn",
+            onclick: async () => {
+              try {
+                await adminUnlockSubmission(uid);
+              } catch (e) {
+                showError(e?.message || String(e));
+                alert("Unlock failed: " + (e?.message || String(e)));
+              }
+            }
+          }, ["Unlock"])
+        ])
+      ]));
+    }
+  }
+
+  wrapper.appendChild(lockedWrap);
 
   return wrapper;
 }
