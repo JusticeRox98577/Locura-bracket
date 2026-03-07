@@ -453,21 +453,35 @@ async function submitAndLock() {
     submitting = true;
     clearTimeout(saveTimer);
     saveTimer = null;
-    await saveDraft();
+    const nombre = $("#nombre")?.value ?? "";
+    const clase  = $("#clase")?.value ?? "";
+    const cleanPicks = { ...picks };
 
     const { data, error } = await supabase
       .from(TBL_SUBMISSIONS)
-      .update({ locked: true })
+      .update({
+        nombre,
+        clase,
+        picks: cleanPicks,
+        locked: true
+      })
       .eq("user_id", user.id)
+      .eq("locked", false)
       .select("*")
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
+    if (!data) {
+      throw new Error("Submit failed. Your bracket may already be locked, or update permissions are blocking this change.");
+    }
 
     submission = data;
     render();
+    alert("Bracket submitted and locked.");
   } catch (e) {
-    showError(e?.message || String(e));
+    const msg = e?.message || String(e);
+    showError(msg);
+    alert("Submit failed: " + msg);
   } finally {
     submitting = false;
   }
