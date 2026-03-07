@@ -201,11 +201,15 @@ async function boot() {
 
 async function signIn() {
   // Google OAuth via Supabase
-  const redirectTo = window.location.origin;
-  await supabase.auth.signInWithOAuth({
+  const callbackUrl = new URL(window.location.href);
+  callbackUrl.hash = "";
+  callbackUrl.search = "";
+
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo }
+    options: { redirectTo: callbackUrl.toString() }
   });
+  if (error) throw error;
 }
 
 async function signOut() {
