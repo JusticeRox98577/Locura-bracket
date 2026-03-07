@@ -579,11 +579,15 @@ async function adminSetCutoff(valueOrNull) {
 async function adminResetResults() {
   if (!isAdmin()) return;
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from(TBL_RESULTS)
-    .upsert({ id: "current", winners: {} }, { onConflict: "id" });
+    .update({ winners: {} })
+    .eq("id", "current")
+    .select("id")
+    .maybeSingle();
 
   if (error) throw error;
+  if (!data) throw new Error("No current results row found (id='current').");
 }
 
 async function loadAdminLockedSubmissions() {
