@@ -147,6 +147,11 @@ function el(tag, attrs = {}, children = []) {
     if (k === "class") n.className = v;
     else if (k === "html") n.innerHTML = v;
     else if (k.startsWith("on") && typeof v === "function") n.addEventListener(k.slice(2), v);
+    else if (typeof v === "boolean") {
+      // For boolean HTML attrs (disabled, checked, etc.), presence means true.
+      if (v) n.setAttribute(k, "");
+      else n.removeAttribute(k);
+    }
     else n.setAttribute(k, v);
   }
   for (const c of children) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
