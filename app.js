@@ -299,6 +299,14 @@ function editingAllowed() {
   return cutoffAllowsEdits();
 }
 
+function getEditingBlockReason() {
+  if (!user) return "You must sign in first.";
+  if (!submission) return "Submission record not found.";
+  if (submission.locked) return "Your bracket is already locked.";
+  if (!cutoffAllowsEdits()) return "Submissions are closed (cutoff passed).";
+  return "";
+}
+
 // ====== BRACKET LOGIC ======
 function getWinnerSeed(matchId) {
   const win = picks[matchId]; // 'A'|'B' or undefined
@@ -417,8 +425,15 @@ function scheduleSave() {
 }
 
 async function saveDraft() {
-  if (!editingAllowed()) return;
-  if (!submission) return;
+  if (!editingAllowed()) {
+    const reason = getEditingBlockReason();
+    if (reason) showError(reason);
+    return;
+  }
+  if (!submission) {
+    showError("Submission record not found.");
+    return;
+  }
 
   saving = true;
   renderHeaderPills();
@@ -446,11 +461,19 @@ async function saveDraft() {
 }
 
 async function submitAndLock() {
-  if (!editingAllowed()) return;
+  if (!editingAllowed()) {
+    const reason = getEditingBlockReason();
+    if (reason) {
+      showError(reason);
+      alert("Submit blocked: " + reason);
+    }
+    return;
+  }
   if (submitting) return;
 
   try {
     submitting = true;
+    render();
     clearTimeout(saveTimer);
     saveTimer = null;
     const nombre = $("#nombre")?.value ?? "";
