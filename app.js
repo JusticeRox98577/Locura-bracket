@@ -561,16 +561,17 @@ async function submitAndLock() {
 async function adminSetCutoff(valueOrNull) {
   if (!isAdmin()) return;
 
-  const patch = { cutoff: valueOrNull }; // null or ISO string
+  const patch = { id: "app", cutoff: valueOrNull }; // null or ISO string
   const { data, error } = await supabase
     .from(TBL_CONFIG)
-    .update(patch)
-    .eq("id", "app")
+    .upsert(patch, { onConflict: "id" })
     .select("*")
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
+  if (!data) throw new Error("Could not save cutoff row.");
   configRow = data;
+  lastError = "";
   render();
 }
 
@@ -781,20 +782,40 @@ function renderAdminPanel() {
   const btnSet = el("button", {
     class: "btn primary",
     onclick: async () => {
-      const v = $("#cutoffInput").value;
-      if (!v) {
-        await adminSetCutoff(null); // open
-        return;
+      try {
+        const v = $("#cutoffInput").value;
+        if (!v) {
+          await adminSetCutoff(null); // open
+          alert("Cutoff cleared. Submissions are open.");
+          return;
+        }
+        // datetime-local is local time; convert to ISO
+        const dt = new Date(v);
+        if (Number.isNaN(dt.getTime())) {
+          throw new Error("Invalid cutoff date/time.");
+        }
+        await adminSetCutoff(dt.toISOString());
+        alert("Cutoff saved.");
+      } catch (e) {
+        const msg = e?.message || String(e);
+        showError(msg);
+        alert("Save cutoff failed: " + msg);
       }
-      // datetime-local is local time; convert to ISO
-      const iso = new Date(v).toISOString();
-      await adminSetCutoff(iso);
     }
   }, ["Save cutoff"]);
 
   const btnOpen = el("button", {
     class: "btn",
-    onclick: async () => { await adminSetCutoff(null); }
+    onclick: async () => {
+      try {
+        await adminSetCutoff(null);
+        alert("Cutoff cleared. Submissions are open.");
+      } catch (e) {
+        const msg = e?.message || String(e);
+        showError(msg);
+        alert("Clear cutoff failed: " + msg);
+      }
+    }
   }, ["Clear cutoff (open)"]);
 
   wrapper.appendChild(el("div", { class: "adminRow" }, [
