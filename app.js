@@ -11,6 +11,7 @@ const ADMIN_EMAILS = ["justicemw9857@gmail.com"]; // add more if you want
 const TBL_CONFIG = "config";           // row: { id: 'app', cutoff: timestamptz|null }
 const TBL_SUBMISSIONS = "submissions"; // row: { id uuid, user_id uuid unique, nombre text, clase text, picks jsonb, locked bool }
 const TBL_CLASSES = "classes";         // ✅ ADDED (teacher-created classes for dropdown)
+const TBL_RESULTS = "results";
 
 // ====== BRACKET DATA (includes Round 0 play-in) ======
 const SONGS = {
@@ -575,6 +576,16 @@ async function adminSetCutoff(valueOrNull) {
   render();
 }
 
+async function adminResetResults() {
+  if (!isAdmin()) return;
+
+  const { error } = await supabase
+    .from(TBL_RESULTS)
+    .upsert({ id: "current", winners: {} }, { onConflict: "id" });
+
+  if (error) throw error;
+}
+
 async function loadAdminLockedSubmissions() {
   if (!isAdmin()) return;
   adminLoadingLocked = true;
@@ -879,6 +890,27 @@ function renderAdminPanel() {
   }
 
   wrapper.appendChild(lockedWrap);
+
+  const resultsWrap = el("div", { style: "margin-top:18px" }, [
+    el("h3", {}, ["Results Controls"]),
+    el("p", { class: "hint" }, ["Reset official match results back to empty."]),
+    el("button", {
+      class: "btn",
+      onclick: async () => {
+        if (!confirm("Reset all official results? This clears winners used for scoring.")) return;
+        try {
+          await adminResetResults();
+          alert("Official results reset.");
+        } catch (e) {
+          const msg = e?.message || String(e);
+          showError(msg);
+          alert("Reset results failed: " + msg);
+        }
+      }
+    }, ["Reset results"])
+  ]);
+
+  wrapper.appendChild(resultsWrap);
 
   return wrapper;
 }
