@@ -216,6 +216,17 @@ async function signOut() {
   await supabase.auth.signOut();
 }
 
+async function handleAuthClick() {
+  try {
+    if (user) await signOut();
+    else await signIn();
+  } catch (e) {
+    const msg = e?.message || String(e);
+    showError(msg);
+    alert("Auth failed: " + msg);
+  }
+}
+
 function isAdmin() {
   const email = user?.email?.toLowerCase();
   return !!email && ADMIN_EMAILS.map(e => e.toLowerCase()).includes(email);
@@ -548,7 +559,7 @@ function renderSkeleton() {
         el("div", { class: "pillrow", id: "pillrow" }, [])
       ]),
       el("div", { class: "top-actions" }, [
-        el("button", { class: "btn primary", id: "authBtn", onclick: () => user ? signOut() : signIn() }, [ user ? "Sign out" : "Sign in with Google" ]),
+        el("button", { class: "btn primary", id: "authBtn", onclick: () => handleAuthClick() }, [ user ? "Sign out" : "Sign in with Google" ]),
         el("div", { class: "smallMuted", id: "userLine" }, [ user ? `(${user.email})` : "" ]),
       ])
     ]),
