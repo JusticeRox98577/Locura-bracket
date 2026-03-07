@@ -527,6 +527,7 @@ async function submitAndLock() {
     alert("Submit failed: " + msg);
   } finally {
     submitting = false;
+    render();
   }
 }
 
