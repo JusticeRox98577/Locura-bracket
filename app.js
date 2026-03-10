@@ -626,10 +626,16 @@ async function adminUnlockSubmission(userId) {
     .eq("locked", true);
 
   if (error) throw error;
+
+  if (submission && submission.user_id === userId) {
+    submission.locked = false;
+  }
+
   await loadAdminLockedSubmissions();
   render();
   alert("Bracket unlocked.");
 }
+
 
 // ====== RENDER ======
 function renderSkeleton() {
