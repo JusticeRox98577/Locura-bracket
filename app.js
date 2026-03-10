@@ -734,7 +734,7 @@ function renderClassSelector() {
       .sort((a, b) => String(a.period).localeCompare(String(b.period)));
 
     for (const c of teacherRows) {
-      const label = `Period ${c.period}${c.class_level ? ` - ${c.class_level}` : ""}`;
+      const label = `${c.period}`;
       periodSelect.appendChild(el("option", { value: c.id }, [label]));
     }
   };
@@ -1106,4 +1106,5 @@ function toLocalDateTimeValue(d) {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
