@@ -13,6 +13,15 @@ const TBL_SUBMISSIONS = "submissions"; // row: { id uuid, user_id uuid unique, n
 const TBL_CLASSES = "classes";         // ✅ ADDED (teacher-created classes for dropdown)
 const TBL_RESULTS = "results";
 
+const LINKS = {
+  bracket: "https://locurademarzo.org",
+  teachers: "https://teachers.locurademarzo.org",
+  results: "https://rounds.locurademarzo.org",
+  voting: "https://voting.locurademarzo.org",
+  votingAdmin: "https://voting.locurademarzo.org/admin",
+  votingDownloads: "https://voting.locurademarzo.org/downloads"
+};
+
 // ====== BRACKET DATA (includes Round 0 play-in) ======
 const SONGS = {
   // Left play-in (Round 0)
@@ -677,28 +686,65 @@ function showError(msg) {
   render();
 }
 
+function renderPortalLinks() {
+  const wrap = el("div", { class: "card" }, [
+    el("h2", {}, ["Locura Pages"]),
+    el("p", { class: "hint" }, ["Use these shortcuts to open each student/teacher page."])
+  ]);
+
+  const row = el("div", { class: "footerBar" }, [
+    el("button", { class: "btn", onclick: () => window.location.href = LINKS.bracket }, ["Student Bracket"]),
+    el("button", { class: "btn", onclick: () => window.location.href = LINKS.voting }, ["Student Voting"]),
+    el("button", { class: "btn", onclick: () => window.location.href = LINKS.teachers }, ["Teacher Portal"]),
+    el("button", { class: "btn", onclick: () => window.location.href = LINKS.results }, ["Results Admin"]),
+    el("button", { class: "btn", onclick: () => window.location.href = LINKS.votingAdmin }, ["Voting Admin"]),
+    el("button", { class: "btn", onclick: () => window.location.href = LINKS.votingDownloads }, ["Voting Downloads"]),
+  ]);
+
+  wrap.appendChild(row);
+  return wrap;
+}
+
 // ✅ ADDED: class select gate + class selector UI
 function renderClassSelector() {
   const wrap = el("div", { class: "card" }, [
     el("h2", {}, ["Select Your Class"]),
-    el("p", { class: "hint" }, ["You must join a class before filling out your bracket."])
+    el("p", { class: "hint" }, ["You must choose teacher and period before filling out your bracket."])
   ]);
 
-  const select = el("select", { class: "input", id: "classSelect" });
-  select.appendChild(el("option", { value: "" }, ["-- Choose your class --"]));
+  const teacherSelect = el("select", { class: "input", id: "teacherSelect" });
+  const periodSelect = el("select", { class: "input", id: "periodSelect" });
 
-  for (const c of classes) {
-    select.appendChild(
-      el("option", { value: c.id }, [
-        `${c.teacher_name} • ${c.class_level} • Period ${c.period}`
-      ])
-    );
+  teacherSelect.appendChild(el("option", { value: "" }, ["-- Choose teacher --"]));
+  periodSelect.appendChild(el("option", { value: "" }, ["-- Choose period --"]));
+
+  const teachers = [...new Set(classes.map(c => (c.teacher_name || "").trim()).filter(Boolean))];
+  for (const t of teachers) {
+    teacherSelect.appendChild(el("option", { value: t }, [t]));
   }
+
+  const populatePeriods = () => {
+    const t = teacherSelect.value || "";
+    periodSelect.innerHTML = "";
+    periodSelect.appendChild(el("option", { value: "" }, ["-- Choose period --"]));
+    if (!t) return;
+
+    const teacherRows = classes
+      .filter(c => (c.teacher_name || "").trim() === t)
+      .sort((a, b) => String(a.period).localeCompare(String(b.period)));
+
+    for (const c of teacherRows) {
+      const label = `Period ${c.period}${c.class_level ? ` - ${c.class_level}` : ""}`;
+      periodSelect.appendChild(el("option", { value: c.id }, [label]));
+    }
+  };
+
+  teacherSelect.addEventListener("change", populatePeriods);
 
   const btn = el("button", {
     class: "btn primary",
     onclick: async () => {
-      const val = $("#classSelect")?.value || "";
+      const val = periodSelect.value || "";
       if (!val) return alert("Please select a class.");
 
       const { data, error } = await supabase
@@ -715,11 +761,13 @@ function renderClassSelector() {
     }
   }, ["Join Class"]);
 
-  wrap.appendChild(select);
+  wrap.appendChild(el("div", { class: "label" }, ["Teacher"]));
+  wrap.appendChild(teacherSelect);
+  wrap.appendChild(el("div", { class: "label" }, ["Period"]));
+  wrap.appendChild(periodSelect);
   wrap.appendChild(el("div", { style: "margin-top:16px" }, [btn]));
   return wrap;
 }
-
 function render() {
   // Update header auth UI
   const authBtn = $("#authBtn");
@@ -738,6 +786,8 @@ function render() {
       el("div", { class: "mono" }, ["Error: " + lastError])
     ]));
   }
+
+  content.appendChild(renderPortalLinks());
 
   // If config row missing, tell them (usually only happens if RLS blocked initial seed)
   if (!configRow) {
@@ -1056,3 +1106,4 @@ function toLocalDateTimeValue(d) {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
