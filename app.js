@@ -16,7 +16,7 @@ const TBL_RESULTS = "results";
 const LINKS = {
   bracket: "https://locurademarzo.org",
   teachers: "https://teachers.locurademarzo.org",
-  results: "https://results.locurademarzo.oeg",
+  results: "https://results.locurademarzo.org",
   voting: "https://voting.locurademarzo.org",
   votingAdmin: "https://voting.locurademarzo.org/admin",
   votingDownloads: "https://voting.locurademarzo.org/downloads"
