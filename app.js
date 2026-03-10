@@ -10,7 +10,7 @@ const ADMIN_EMAILS = ["justicemw9857@gmail.com"]; // add more if you want
 // Tables:
 const TBL_CONFIG = "config";           // row: { id: 'app', cutoff: timestamptz|null }
 const TBL_SUBMISSIONS = "submissions"; // row: { id uuid, user_id uuid unique, nombre text, clase text, picks jsonb, locked bool }
-const TBL_CLASSES = "classes";         // ✅ ADDED (teacher-created classes for dropdown)
+const TBL_CLASSES = "classes";         // âœ… ADDED (teacher-created classes for dropdown)
 const TBL_RESULTS = "results";
 
 const LINKS = {
@@ -25,22 +25,22 @@ const LINKS = {
 // ====== BRACKET DATA (includes Round 0 play-in) ======
 const SONGS = {
   // Left play-in (Round 0)
-  "L-R0-A": { song: "TQMQA", artist: "Eladio Carrión" },
+  "L-R0-A": { song: "TQMQA", artist: "Eladio CarriÃ³n" },
   "L-R0-B": { song: "Akakaw", artist: "Renata Flores" },
 
   // Left round 1
-  "L-R1-1-A": { song: "Ángel", artist: "Grupo Frontera & Romeo Santos" }, // faces play-in winner
+  "L-R1-1-A": { song: "Ãngel", artist: "Grupo Frontera & Romeo Santos" }, // faces play-in winner
   "L-R1-2-A": { song: "Tocando el Cielo", artist: "Luis Fonsi" },
   "L-R1-2-B": { song: "Regalo", artist: "Alvaro Soler" },
-  "L-R1-3-A": { song: "Si Sabes Contar", artist: "Los Ángeles Azules, Luck Ra, Yami Safdie" },
+  "L-R1-3-A": { song: "Si Sabes Contar", artist: "Los Ãngeles Azules, Luck Ra, Yami Safdie" },
   "L-R1-3-B": { song: "Amuleto", artist: "Diego Torres" },
   "L-R1-4-A": { song: "Narcisista", artist: "The Warning" },
-  "L-R1-4-B": { song: "Coleccionando Heridas", artist: "Karol G & Antonis Solís" },
+  "L-R1-4-B": { song: "Coleccionando Heridas", artist: "Karol G & Antonis SolÃ­s" },
 
   // Right round 1
-  "R-R1-1-A": { song: "¿Para Qué?", artist: "Ela Taubert" },
+  "R-R1-1-A": { song: "Â¿Para QuÃ©?", artist: "Ela Taubert" },
   "R-R1-1-B": { song: "La Mujer que Soy", artist: "Fanny Lu" },
-  "R-R1-2-A": { song: "Buen Café", artist: "Efecto Pasillo" },
+  "R-R1-2-A": { song: "Buen CafÃ©", artist: "Efecto Pasillo" },
   "R-R1-2-B": { song: "Goodbye", artist: "Arthur Hanlon, Carlos Vives, Goyo" },
   "R-R1-3-A": { song: "6 de Febrero", artist: "Aitana" },
   "R-R1-3-B": { song: "Luna Llena", artist: "Ebenezer Guerra & Elvis Crespo" },
@@ -48,84 +48,84 @@ const SONGS = {
   "R-R1-4-B": { song: "Music Sessions #66", artist: "Daddy Yankee & BZRP" },
 };
 
-// Each match has two “slots” which are either a seed (SONGS key) or comes from another match winner.
+// Each match has two â€œslotsâ€ which are either a seed (SONGS key) or comes from another match winner.
 const MATCHES = [
   // Round 0 (Play-in) - Left only
-  { id: "L-R0", title: "Round 0 (Play-in)", code: "R0 • Play-in", side: "Left",
+  { id: "L-R0", title: "Round 0 (Play-in)", code: "R0 â€¢ Play-in", side: "Left",
     a: { seed: "L-R0-A" }, b: { seed: "L-R0-B" },
     next: { matchId: "L-R1-1", slot: "B" } // winner becomes slot B in L-R1-1
   },
 
   // Round 1 (Left)
-  { id: "L-R1-1", title: "Round 1 (Left)", code: "R1 • Left 1", side: "Left",
+  { id: "L-R1-1", title: "Round 1 (Left)", code: "R1 â€¢ Left 1", side: "Left",
     a: { seed: "L-R1-1-A" }, b: { from: "L-R0" },
     next: { matchId: "L-QF-1", slot: "A" }
   },
-  { id: "L-R1-2", title: "Round 1 (Left)", code: "R1 • Left 2", side: "Left",
+  { id: "L-R1-2", title: "Round 1 (Left)", code: "R1 â€¢ Left 2", side: "Left",
     a: { seed: "L-R1-2-A" }, b: { seed: "L-R1-2-B" },
     next: { matchId: "L-QF-1", slot: "B" }
   },
-  { id: "L-R1-3", title: "Round 1 (Left)", code: "R1 • Left 3", side: "Left",
+  { id: "L-R1-3", title: "Round 1 (Left)", code: "R1 â€¢ Left 3", side: "Left",
     a: { seed: "L-R1-3-A" }, b: { seed: "L-R1-3-B" },
     next: { matchId: "L-QF-2", slot: "A" }
   },
-  { id: "L-R1-4", title: "Round 1 (Left)", code: "R1 • Left 4", side: "Left",
+  { id: "L-R1-4", title: "Round 1 (Left)", code: "R1 â€¢ Left 4", side: "Left",
     a: { seed: "L-R1-4-A" }, b: { seed: "L-R1-4-B" },
     next: { matchId: "L-QF-2", slot: "B" }
   },
 
   // Quarterfinals (Left)
-  { id: "L-QF-1", title: "Quarterfinals (Left)", code: "R2 • Left QF 1", side: "Left",
+  { id: "L-QF-1", title: "Quarterfinals (Left)", code: "R2 â€¢ Left QF 1", side: "Left",
     a: { from: "L-R1-1" }, b: { from: "L-R1-2" },
     next: { matchId: "L-SF", slot: "A" }
   },
-  { id: "L-QF-2", title: "Quarterfinals (Left)", code: "R2 • Left QF 2", side: "Left",
+  { id: "L-QF-2", title: "Quarterfinals (Left)", code: "R2 â€¢ Left QF 2", side: "Left",
     a: { from: "L-R1-3" }, b: { from: "L-R1-4" },
     next: { matchId: "L-SF", slot: "B" }
   },
 
   // Semifinal (Left)
-  { id: "L-SF", title: "Semifinal (Left)", code: "R3 • Left Semi", side: "Left",
+  { id: "L-SF", title: "Semifinal (Left)", code: "R3 â€¢ Left Semi", side: "Left",
     a: { from: "L-QF-1" }, b: { from: "L-QF-2" },
     next: { matchId: "FINAL", slot: "A" }
   },
 
   // Round 1 (Right)
-  { id: "R-R1-1", title: "Round 1 (Right)", code: "R1 • Right 1", side: "Right",
+  { id: "R-R1-1", title: "Round 1 (Right)", code: "R1 â€¢ Right 1", side: "Right",
     a: { seed: "R-R1-1-A" }, b: { seed: "R-R1-1-B" },
     next: { matchId: "R-QF-1", slot: "A" }
   },
-  { id: "R-R1-2", title: "Round 1 (Right)", code: "R1 • Right 2", side: "Right",
+  { id: "R-R1-2", title: "Round 1 (Right)", code: "R1 â€¢ Right 2", side: "Right",
     a: { seed: "R-R1-2-A" }, b: { seed: "R-R1-2-B" },
     next: { matchId: "R-QF-1", slot: "B" }
   },
-  { id: "R-R1-3", title: "Round 1 (Right)", code: "R1 • Right 3", side: "Right",
+  { id: "R-R1-3", title: "Round 1 (Right)", code: "R1 â€¢ Right 3", side: "Right",
     a: { seed: "R-R1-3-A" }, b: { seed: "R-R1-3-B" },
     next: { matchId: "R-QF-2", slot: "A" }
   },
-  { id: "R-R1-4", title: "Round 1 (Right)", code: "R1 • Right 4", side: "Right",
+  { id: "R-R1-4", title: "Round 1 (Right)", code: "R1 â€¢ Right 4", side: "Right",
     a: { seed: "R-R1-4-A" }, b: { seed: "R-R1-4-B" },
     next: { matchId: "R-QF-2", slot: "B" }
   },
 
   // Quarterfinals (Right)
-  { id: "R-QF-1", title: "Quarterfinals (Right)", code: "R2 • Right QF 1", side: "Right",
+  { id: "R-QF-1", title: "Quarterfinals (Right)", code: "R2 â€¢ Right QF 1", side: "Right",
     a: { from: "R-R1-1" }, b: { from: "R-R1-2" },
     next: { matchId: "R-SF", slot: "A" }
   },
-  { id: "R-QF-2", title: "Quarterfinals (Right)", code: "R2 • Right QF 2", side: "Right",
+  { id: "R-QF-2", title: "Quarterfinals (Right)", code: "R2 â€¢ Right QF 2", side: "Right",
     a: { from: "R-R1-3" }, b: { from: "R-R1-4" },
     next: { matchId: "R-SF", slot: "B" }
   },
 
   // Semifinal (Right)
-  { id: "R-SF", title: "Semifinal (Right)", code: "R3 • Right Semi", side: "Right",
+  { id: "R-SF", title: "Semifinal (Right)", code: "R3 â€¢ Right Semi", side: "Right",
     a: { from: "R-QF-1" }, b: { from: "R-QF-2" },
     next: { matchId: "FINAL", slot: "B" }
   },
 
   // Final
-  { id: "FINAL", title: "Final", code: "R4 • Final", side: "Final",
+  { id: "FINAL", title: "Final", code: "R4 â€¢ Final", side: "Final",
     a: { from: "L-SF" }, b: { from: "R-SF" },
     next: null
   },
@@ -140,9 +140,9 @@ let session = null;
 let user = null;
 
 let configRow = null;     // { id:'app', cutoff: ... }
-let submission = null;    // user’s row in submissions (or null)
+let submission = null;    // userâ€™s row in submissions (or null)
 let picks = {};           // { matchId: 'A' | 'B' } winner slot
-let classes = [];         // ✅ ADDED
+let classes = [];         // âœ… ADDED
 let adminLockedSubmissions = [];
 let adminLoadingLocked = false;
 
@@ -193,7 +193,7 @@ async function boot() {
   renderSkeleton();
 
   await loadConfig();
-  await loadClasses(); // ✅ ADDED
+  await loadClasses(); // âœ… ADDED
 
   if (user) {
     await loadOrCreateSubmission();
@@ -250,7 +250,7 @@ function isAdmin() {
   return !!email && ADMIN_EMAILS.map(e => e.toLowerCase()).includes(email);
 }
 
-// ✅ ADDED: load classes for dropdown
+// âœ… ADDED: load classes for dropdown
 async function loadClasses() {
   const { data, error } = await supabase
     .from(TBL_CLASSES)
@@ -275,7 +275,7 @@ async function loadConfig() {
   // If missing, create it (admin will lock it down via RLS)
   if (!data) {
     // This insert will only work if your RLS allows it (or you did initial seed).
-    // If it fails, that’s OK — we’ll show "missing config".
+    // If it fails, thatâ€™s OK â€” weâ€™ll show "missing config".
     const ins = await supabase.from(TBL_CONFIG).insert({ id: "app", cutoff: null }).select().maybeSingle();
     if (!ins.error) configRow = ins.data;
     else configRow = null;
@@ -307,9 +307,10 @@ async function loadOrCreateSubmission() {
     .from(TBL_SUBMISSIONS)
     .upsert({
       user_id: uid,
+      email: user?.email ?? "",
       nombre: "",
       clase: "",
-      class_id: null, // ✅ ADDED
+      class_id: null, // âœ… ADDED
       picks: {},
       locked: false
     }, { onConflict: "user_id", ignoreDuplicates: true })
@@ -418,9 +419,9 @@ function normalizeCascade() {
       }
 
       // If pick refers to a slot that exists but downstream was based on old entrants,
-      // it’s still valid because we store A/B choice, not seedKey.
+      // itâ€™s still valid because we store A/B choice, not seedKey.
       // However, if user had picked and entrants changed due to upstream change,
-      // we should clear it (so it doesn’t silently pick a different song).
+      // we should clear it (so it doesnâ€™t silently pick a different song).
       const pickedSeed = currentPick === "A" ? a.seedKey : b.seedKey;
       const prevSnapshotKey = `__snapshot_${m.id}`;
       const snapshot = picks[prevSnapshotKey];
@@ -496,12 +497,14 @@ async function saveDraft() {
 
   const nombre = $("#nombre")?.value ?? "";
   const clase  = $("#clase")?.value ?? "";
+  const email = user?.email ?? submission?.email ?? "";
 
   const cleanPicks = { ...picks };
 
   const { data, error } = await supabase
     .from(TBL_SUBMISSIONS)
     .update({
+      email,
       nombre,
       clase,
       picks: cleanPicks
@@ -534,6 +537,7 @@ async function submitAndLock() {
     saveTimer = null;
     const nombre = ($("#nombre")?.value ?? "").trim();
     const clase  = $("#clase")?.value ?? "";
+    const email = user?.email ?? submission?.email ?? "";
     const cleanPicks = { ...picks };
 
     if (!nombre) {
@@ -543,6 +547,7 @@ async function submitAndLock() {
     const { data, error } = await supabase
       .from(TBL_SUBMISSIONS)
       .update({
+        email,
         nombre,
         clase,
         picks: cleanPicks,
@@ -659,7 +664,7 @@ function renderSkeleton() {
     ]),
     el("div", { id: "content" }, [
       el("div", { class: "card" }, [
-        el("h2", {}, ["Loading…"]),
+        el("h2", {}, ["Loadingâ€¦"]),
         el("p", { class: "hint" }, ["Setting up your session and bracket."])
       ])
     ])
@@ -680,7 +685,7 @@ function renderHeaderPills() {
     : submission?.locked
       ? el("div", { class: "pill bad" }, ["Locked"])
       : cutoffAllowsEdits()
-        ? el("div", { class: "pill ok" }, [saving ? "Saving…" : "Editing enabled"])
+        ? el("div", { class: "pill ok" }, [saving ? "Savingâ€¦" : "Editing enabled"])
         : el("div", { class: "pill bad" }, ["Editing closed"]);
 
   pillrow.appendChild(cutoffPill);
@@ -715,7 +720,7 @@ function renderPortalLinks() {
   return wrap;
 }
 
-// ✅ ADDED: class select gate + class selector UI
+// âœ… ADDED: class select gate + class selector UI
 function renderClassSelector() {
   const wrap = el("div", { class: "card" }, [
     el("h2", {}, ["Select Your Class"]),
@@ -804,7 +809,7 @@ function render() {
     content.appendChild(el("div", { class: "card" }, [
       el("h2", {}, ["Config missing"]),
       el("p", { class: "hint" }, [
-        "I couldn’t read the config row (config.id='app'). ",
+        "I couldnâ€™t read the config row (config.id='app'). ",
         "In Supabase Table Editor, insert one row into table ",
         el("span", { class:"mono" }, ["config"]),
         " with id = ",
@@ -828,7 +833,7 @@ function render() {
     return;
   }
 
-  // ✅ NEW: require class selection before student info + bracket
+  // âœ… NEW: require class selection before student info + bracket
   if (!submission?.class_id) {
     content.appendChild(renderClassSelector());
     return;
@@ -900,7 +905,7 @@ function renderAdminPanel() {
       el("div", { class: "smallMuted" }, [
         cutoffVal
           ? `Current cutoff: ${cutoffVal.toLocaleString()}`
-          : "Current cutoff: (not set — submissions open)"
+          : "Current cutoff: (not set â€” submissions open)"
       ])
     ]),
     el("div", {}, [btnSet]),
@@ -929,7 +934,7 @@ function renderAdminPanel() {
     lockedWrap.appendChild(el("p", { class: "smallMuted" }, ["No locked submissions found."]));
   } else {
     for (const row of adminLockedSubmissions) {
-      const title = `${row.nombre || "(No nombre)"} • ${row.clase || "(No clase)"}`;
+      const title = `${row.nombre || "(No nombre)"} â€¢ ${row.clase || "(No clase)"}`;
       const uid = row.user_id || "";
       lockedWrap.appendChild(el("div", { class: "match" }, [
         el("div", { class: "matchTop" }, [
@@ -1004,7 +1009,7 @@ function renderStudentInfo() {
 function renderBracket() {
   const wrap = el("div", { class: "card" }, [
     el("h2", {}, ["Bracket"]),
-    el("p", { class: "hint" }, ["Pick winners — they will auto-advance."]),
+    el("p", { class: "hint" }, ["Pick winners â€” they will auto-advance."]),
   ]);
 
   // Group by section titles in the order we defined
@@ -1035,7 +1040,7 @@ function renderBracket() {
   wrap.appendChild(footer);
   wrap.appendChild(el("div", { class:"note" }, [
     submission?.locked
-      ? "Locked. You can view your bracket but you can’t change it."
+      ? "Locked. You can view your bracket but you canâ€™t change it."
       : "Save anytime. When you submit, it locks permanently."
   ]));
 
@@ -1077,7 +1082,7 @@ function renderMatch(m) {
 function renderPickButton(matchId, slot, entrant, enabled, selected) {
   const missing = !entrant;
 
-  let labelSong = "Waiting…";
+  let labelSong = "Waitingâ€¦";
   let labelArtist = "Waiting on earlier pick(s)";
   if (!missing) {
     labelSong = entrant.song;
