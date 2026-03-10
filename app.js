@@ -532,9 +532,13 @@ async function submitAndLock() {
     render();
     clearTimeout(saveTimer);
     saveTimer = null;
-    const nombre = $("#nombre")?.value ?? "";
+    const nombre = ($("#nombre")?.value ?? "").trim();
     const clase  = $("#clase")?.value ?? "";
     const cleanPicks = { ...picks };
+
+    if (!nombre) {
+      throw new Error("Name is required before submitting.");
+    }
 
     const { data, error } = await supabase
       .from(TBL_SUBMISSIONS)
